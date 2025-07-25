@@ -16,11 +16,14 @@ This sample uses the Agent Development Kit (ADK) to create a simple calendar upd
     cd samples/python/agents/adk_cloud_run
     ```
 
-2. Create an environment file with your API key:
+2. Create an environment file with your API key and an APP_URL:
 
    ```bash
-   echo "GOOGLE_API_KEY=your_api_key_here" > .env
-   ```
+   cat << EOF > .env
+   GOOGLE_API_KEY=your_api_key_here
+   APP_URL="http://127.0.0.1:10002"
+   EOF
+   ```bash
 
 3. Run an agent:
 
