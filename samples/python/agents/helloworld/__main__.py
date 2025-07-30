@@ -39,7 +39,7 @@ def create_dynamic_public_card(base_card: AgentCard) -> AgentCard:
 
 
 def create_dynamic_extended_card(
-    base_card: AgentCard, context: RequestContext
+    base_card: AgentCard, _context: RequestContext
 ) -> AgentCard:
     """Dynamically creates an extended agent card from a base card.
 
@@ -49,7 +49,8 @@ def create_dynamic_extended_card(
 
     Args:
         base_card: The public agent card to use as a template.
-        context: The server call context, containing request information.
+        _context: The server call context, containing request information.
+            This parameter is intentionally unused in this example.
 
     Returns:
         A new, dynamically generated AgentCard.
@@ -97,6 +98,12 @@ def create_dynamic_extended_card(
     help='Make the extended agent card dynamic (requires --enable-extended-card).',
 )
 def main(dynamic_public_card, enable_extended_card, dynamic_extended_card):
+    if dynamic_extended_card and not enable_extended_card:
+        raise click.UsageError(
+            'The --dynamic-extended-card flag requires the --enable-extended-card'
+            ' flag to also be set.'
+        )
+
     skill = AgentSkill(
         id='hello_world',
         name='Returns hello world',
