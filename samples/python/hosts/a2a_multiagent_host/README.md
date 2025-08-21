@@ -10,9 +10,9 @@ This document describes a multi-agent set up using Agent2Agent (A2A) and a examp
 
 ## Architecture
 
-The application utilizes a multi-agent architecture where a host A2A server delegates tasks to remote A2A servers (Airbnb and Weather) based on the user's query. These agents then interact using A2A proto. These A2A servers are built based ADK. We then use the CLI tool talk to the host A2A server also using A2A proto. 
+The application utilizes a multi-agent architecture where a host A2A server delegates tasks to remote A2A servers (Airbnb and Weather) based on the user's query. These agents then interact using A2A proto. These A2A servers are built based ADK. We then use the CLI tool talk to the host A2A server also using A2A proto.
 
-![architecture](assets/A2A_multi_agents.png)
+![architecture](assets/A2A_multi_agents.jpg)
 
 ### App UI
 
@@ -88,8 +88,8 @@ Here are example questions:
 
 - "Please find a room in LA, CA, June 20-25, 2025, two adults"
 
-The response should include the traceability extension as additional artifact included. Please see the example screenshot above.
-We can also include the traceability information as metadata in the response.
+The response should include the traceability extension as an additional artifact. Please see the example screenshot above.
+Alternatively, we can also include the traceability information as metadata in the response.
 
 ## References
 
@@ -101,7 +101,7 @@ We can also include the traceability information as metadata in the response.
 
 Important: The sample code provided is for demonstration purposes and illustrates the mechanics of the Agent-to-Agent (A2A) protocol. When building production applications, it is critical to treat any agent operating outside of your direct control as a potentially untrusted entity.
 
-All data received from an external agent—including but not limited to its AgentCard, messages, artifacts, and task statuses—should be handled as untrusted input. For example, a malicious agent could provide an AgentCard containing crafted data in its fields (e.g., description, name, skills.description). 
+All data received from an external agent—including but not limited to its AgentCard, messages, artifacts, and task statuses—should be handled as untrusted input. For example, a malicious agent could provide an AgentCard containing crafted data in its fields (e.g., description, name, skills.description).
 
 If this data is used without sanitization to construct prompts for a Large Language Model (LLM), it could expose your application to prompt injection attacks.  Failure to properly validate and sanitize this data before use can introduce security vulnerabilities into your application.
 

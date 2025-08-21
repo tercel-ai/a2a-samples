@@ -1,6 +1,7 @@
 # pylint: disable=logging-fstring-interpolation
 import asyncio
 import json
+import logging
 import os
 import uuid
 
@@ -28,6 +29,9 @@ from remote_agent_connection import (
     TaskUpdateCallback,
 )
 
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 load_dotenv()
 
@@ -105,12 +109,16 @@ class RoutingAgent:
                     self.remote_agent_connections[card.name] = remote_connection
                     self.cards[card.name] = card
                 except httpx.ConnectError as e:
-                    print(
-                        f'ERROR: Failed to get agent card from {address}: {e}'
+                    logger.debug(
+                        'ERROR: Failed to get agent card from %s: %s',
+                        address,
+                        e,
                     )
                 except Exception as e:  # Catch other potential errors
-                    print(
-                        f'ERROR: Failed to initialize connection for {address}: {e}'
+                    logger.debug(
+                        'ERROR: Failed to initialize connection for %s: %s',
+                        address,
+                        e,
                     )
 
         # Populate self.agents using the logic from original __init__ (via list_remote_agents)
@@ -137,22 +145,6 @@ class RoutingAgent:
             model=gemini_model,
             name='Routing_agent',
             instruction=self.root_instruction,
-            #     instruction=f"""
-            # **Role:** You are an expert Routing Delegator. Your primary function is to accurately delegate user inquiries regarding weather or accommodations to the appropriate specialized remote agents.
-            # **Core Directives:**
-            # * **Task Delegation:** Utilize the `send_message` function to assign actionable tasks to remote agents.
-            # * **Contextual Awareness for Remote Agents:** If a remote agent repeatedly requests user confirmation, assume it lacks access to the         full conversation history. In such cases, enrich the task description with all necessary contextual information relevant to that         specific agent.
-            # * **Autonomous Agent Engagement:** Never seek user permission before engaging with remote agents. If multiple agents are required to         fulfill a request, connect with them directly without requesting user preference or confirmation.
-            # * **Transparent Communication:** Always present the complete and detailed response from the remote agent to the user.
-            # * **User Confirmation Relay:** If a remote agent asks for confirmation, and the user has not already provided it, relay this         confirmation request to the user.
-            # * **Focused Information Sharing:** Provide remote agents with only relevant contextual information. Avoid extraneous details.
-            # * **No Redundant Confirmations:** Do not ask remote agents for confirmation of information or actions.
-            # * **Tool Reliance:** Strictly rely on available tools to address user requests. Do not generate responses based on assumptions. If         information is insufficient, request clarification from the user.
-            # * **Prioritize Recent Interaction:** Focus primarily on the most recent parts of the conversation when processing requests.
-            # * **Active Agent Prioritization:** If an active agent is already engaged, route subsequent related requests to that agent using the         appropriate task update tool.
-            # **Agent Roster:**
-            # * Available Agents: `{self.agents}`
-            #         """,
             before_model_callback=self.before_model_callback,
             description=(
                 'This Routing agent orchestrates the decomposition of the user asking for weather forecast or airbnb accommodation'
@@ -216,8 +208,10 @@ class RoutingAgent:
 
         remote_agent_info = []
         for card in self.cards.values():
-            print(f'Found agent card: {card.model_dump(exclude_none=True)}')
-            print('=' * 100)
+            logger.debug(
+                'Found agent card: %s', card.model_dump(exclude_none=True)
+            )
+            logger.debug('=' * 100)
             remote_agent_info.append(
                 {'name': card.name, 'description': card.description}
             )
@@ -288,37 +282,20 @@ class RoutingAgent:
         send_response: SendMessageResponse = await client.send_message(
             message_request=message_request
         )
-        print(
+        logger.debug(
             'send_response',
             send_response.model_dump_json(exclude_none=True, indent=2),
         )
 
         if not isinstance(send_response.root, SendMessageSuccessResponse):
-            print('received non-success response. Aborting get task ')
+            logger.debug('received non-success response. Aborting get task ')
             return None
 
         if not isinstance(send_response.root.result, Task):
-            print('received non-task response. Aborting get task ')
+            logger.debug('received non-task response. Aborting get task ')
             return None
 
         task = send_response.root.result
-        # print(
-        #     'send_message response',
-        #     task.model_dump_json(exclude_none=True, indent=2),
-        # )
-        # while task.state not in ('completed', 'failed'):
-        #     await asyncio.sleep(1)  # Polling interval
-        #     print('Polling for task completion...')
-        #     task_response = await client.agent_client.get_task(task.id)
-        #     if (
-        #         isinstance(task_response.root, SendMessageSuccessResponse)
-        #         and task_response.root.result
-        #     ):
-        #         task = task_response.root.result
-        #         print(
-        #             'task polling response',
-        #             task.model_dump_json(exclude_none=True, indent=2),
-        #         )
 
         return task
 
@@ -339,17 +316,13 @@ def _get_initialized_routing_agent_sync() -> Agent:
         return asyncio.run(_async_main())
     except RuntimeError as e:
         if 'asyncio.run() cannot be called from a running event loop' in str(e):
-            print(
-                f'Warning: Could not initialize RoutingAgent with asyncio.run(): {e}. '
+            logger.debug(
+                'Warning: Could not initialize RoutingAgent with asyncio.run(): %s. '
                 'This can happen if an event loop is already running (e.g., in Jupyter). '
-                'Consider initializing RoutingAgent within an async function in your application.'
+                'Consider initializing RoutingAgent within an async function in your application.',
+                e,
             )
         raise
 
 
 root_agent = _get_initialized_routing_agent_sync()
-
-# from google.adk.a2a.utils.agent_to_a2a import to_a2a
-
-
-# a2a_app = to_a2a(root_agent, port=8083, host='0.0.0.0')

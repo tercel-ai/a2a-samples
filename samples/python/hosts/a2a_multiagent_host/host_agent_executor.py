@@ -22,9 +22,6 @@ from a2a.types import (
 from a2a.utils.errors import ServerError
 from google.adk import Runner
 from google.genai import types
-
-# from traceability import CallTypeEnum, ResponseTrace, TraceStep
-# from traceability_extension import TRACEABILITY_EXTENSION_URI, traceability
 from traceability_ext import (
     TRACEABILITY_EXTENSION_URI,
     CallTypeEnum,
@@ -32,8 +29,6 @@ from traceability_ext import (
     TraceStep,
 )
 
-
-# from traceability_extension.traceability import TraceRecord
 
 if TYPE_CHECKING:
     from google.adk.sessions.session import Session
