@@ -54,7 +54,7 @@ cd samples/python/agents/airbnb_planner_multiagent/airbnb_agent
 uv run .
 ```
 
-This will starts the airbnb A2A server (port 10002).
+This will start the airbnb A2A server (port 10002).
 
 ## 2. Run Weather A2A Agent
 
@@ -64,7 +64,7 @@ Open a new terminal and run the weather agent server:
 cd samples/python/agents/airbnb_planner_multiagent/weather_agent
 uv run .
 ```
-This will starts the airbnb A2A server (port 10001).
+This will start the airbnb A2A server (port 10001).
 
 ## 3. Run Host A2A Agent
 
@@ -74,7 +74,7 @@ Open a new terminal and run the host agent server
 cd samples/python/host/a2a_multiagent
 uv run .
 ```
-This will starts the A2A Host server (port 8083).
+This will start the A2A Host server (port 8083).
 
 ## 4. Run the CLI Tool
 ```bash
