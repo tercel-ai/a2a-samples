@@ -54,7 +54,7 @@ cd samples/python/agents/airbnb_planner_multiagent/airbnb_agent
 uv run .
 ```
 
-This will starts the airbnb A2A server on http://localhost:10002
+This will starts the airbnb A2A server (port 10002).
 
 ## 2. Run Weather A2A Agent
 
@@ -64,7 +64,7 @@ Open a new terminal and run the weather agent server:
 cd samples/python/agents/airbnb_planner_multiagent/weather_agent
 uv run .
 ```
-This will starts the airbnb A2A server on http://localhost:10001
+This will starts the airbnb A2A server (port 10001).
 
 ## 3. Run Host A2A Agent
 
@@ -74,7 +74,7 @@ Open a new terminal and run the host agent server
 cd samples/python/host/a2a_multiagent
 uv run .
 ```
-This will starts the airbnb A2A server on http://localhost:8083
+This will starts the A2A Host server (port 8083).
 
 ## 4. Run the CLI Tool
 ```bash
@@ -89,7 +89,7 @@ Here are example questions:
 - "Please find a room in LA, CA, June 20-25, 2025, two adults"
 
 The response should include the traceability extension as additional artifact included. Please see the example screenshot above.
-We can also include the traceability information as metadata in the response. 
+We can also include the traceability information as metadata in the response.
 
 ## References
 
@@ -101,6 +101,8 @@ We can also include the traceability information as metadata in the response.
 
 Important: The sample code provided is for demonstration purposes and illustrates the mechanics of the Agent-to-Agent (A2A) protocol. When building production applications, it is critical to treat any agent operating outside of your direct control as a potentially untrusted entity.
 
-All data received from an external agent—including but not limited to its AgentCard, messages, artifacts, and task statuses—should be handled as untrusted input. For example, a malicious agent could provide an AgentCard containing crafted data in its fields (e.g., description, name, skills.description). If this data is used without sanitization to construct prompts for a Large Language Model (LLM), it could expose your application to prompt injection attacks.  Failure to properly validate and sanitize this data before use can introduce security vulnerabilities into your application.
+All data received from an external agent—including but not limited to its AgentCard, messages, artifacts, and task statuses—should be handled as untrusted input. For example, a malicious agent could provide an AgentCard containing crafted data in its fields (e.g., description, name, skills.description). 
+
+If this data is used without sanitization to construct prompts for a Large Language Model (LLM), it could expose your application to prompt injection attacks.  Failure to properly validate and sanitize this data before use can introduce security vulnerabilities into your application.
 
 Developers are responsible for implementing appropriate security measures, such as input validation and secure handling of credentials to protect their systems and users.

@@ -132,12 +132,9 @@ class RoutingAgent:
 
     def create_agent(self) -> Agent:
         """Create an instance of the RoutingAgent."""
-        LITELLM_MODEL = os.getenv(
-            'LITELLM_MODEL', 'gemini/gemini-2.5-flash-lite'
-        )
+        gemini_model = os.getenv('GEMINI_MODEL', 'gemini-2.5-flash')
         return Agent(
-            #            model=LiteLlm(model=LITELLM_MODEL),
-            model='gemini-2.5-flash',
+            model=gemini_model,
             name='Routing_agent',
             instruction=self.root_instruction,
             #     instruction=f"""
@@ -253,7 +250,7 @@ class RoutingAgent:
 
         if not client:
             raise ValueError(f'Client not available for {agent_name}')
-        task_id = state['task_id'] if 'task_id' in state else str(uuid.uuid4())
+        task_id = state['task_id'] if 'task_id' in state else None
 
         if 'context_id' in state:
             context_id = state['context_id']
@@ -279,8 +276,8 @@ class RoutingAgent:
             },
         }
 
-        # if task_id:
-        #     payload['message']['taskId'] = task_id
+        if task_id:
+            payload['message']['taskId'] = task_id
 
         if context_id:
             payload['message']['contextId'] = context_id

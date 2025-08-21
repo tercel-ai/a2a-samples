@@ -176,7 +176,7 @@ class HostAgentExecutor(AgentExecutor):
                             parameters={},
                             requests=agent_query,
                             step_type='agent_call',
-                        ) as agent_step:
+                        ):
                             logger.debug(
                                 '### Tracing agent call for agent: %s',
                                 agent_name,
