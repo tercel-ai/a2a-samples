@@ -2,7 +2,6 @@ import json
 import logging
 
 from collections.abc import AsyncIterator
-from sched import Event
 from typing import TYPE_CHECKING
 
 from a2a.server.agent_execution import AgentExecutor
@@ -137,7 +136,7 @@ class HostAgentExecutor(AgentExecutor):
                         ),
                     )
                 else:
-                    logger.debug('#### Skipping event - Function Calls')
+                    logger.debug('#### Event - Function Calls')
                     agent_name = ''
                     agent_query = ''
                     calls = event.get_function_calls()
