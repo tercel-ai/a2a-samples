@@ -33,28 +33,28 @@ class HelloWorldAgentExecutor(AgentExecutor):
         context: RequestContext,
         event_queue: EventQueue,
     ) -> None:
-        # 检查配置，决定使用哪种处理策略
+        # check configuration, decide which mode to use
         use_streaming_mode = self._should_use_streaming_mode(context)
         
         if use_streaming_mode:
-            # 流式模式：推送多个状态更新事件
+            # streaming mode: push multiple status update events
             await self._execute_streaming_mode(context, event_queue)
         else:
-            # 简单模式：直接返回结果
+            # simple mode: return result directly
             await self._execute_simple_mode(context, event_queue)
 
     def _should_use_streaming_mode(self, context: RequestContext) -> bool:
-        """判断是否应该使用流式模式"""
-        # 方法：检查配置参数中的 stream 字段
+        """check if should use streaming mode"""
+        # check stream field in configuration
         print('print context.configuration', context.configuration)
         print('print context.metadata', context.metadata)
 
-        # 检查 MessageSendParams 的 metadata 字段
+        # check MessageSendParams metadata field
         if context.metadata and context.metadata.get('stream') == True:
             logger.info('Using streaming mode from MessageSendParams metadata')
             return True
         
-        # 默认使用简单模式
+        # default to simple mode
         logger.info('Using simple mode')
         return False
 
@@ -63,7 +63,7 @@ class HelloWorldAgentExecutor(AgentExecutor):
         context: RequestContext, 
         event_queue: EventQueue
     ) -> None:
-        """简单模式：直接返回结果，不推送中间状态"""
+        """simple mode: return result directly, no intermediate status updates"""
         result = await self.agent.invoke()
         await event_queue.enqueue_event(new_agent_text_message(f"Simple result: {result}"))
 
@@ -72,8 +72,8 @@ class HelloWorldAgentExecutor(AgentExecutor):
         context: RequestContext, 
         event_queue: EventQueue
     ) -> None:
-        """流式模式：推送多个状态更新事件"""
-        # 模拟处理过程，推送多个状态更新事件
+        """streaming mode: push multiple status update events"""
+        # simulate processing, push multiple status update events
         status_update1 = TaskStatusUpdateEvent(
             task_id=context.task_id,
             context_id=context.context_id,
@@ -84,7 +84,7 @@ class HelloWorldAgentExecutor(AgentExecutor):
             final=False
         )
         await event_queue.enqueue_event(status_update1)
-        await asyncio.sleep(0.5)  # 模拟处理时间
+        await asyncio.sleep(0.5)  # simulate processing time
         
         status_update2 = TaskStatusUpdateEvent(
             task_id=context.task_id,
@@ -96,10 +96,10 @@ class HelloWorldAgentExecutor(AgentExecutor):
             final=False
         )
         await event_queue.enqueue_event(status_update2)
-        await asyncio.sleep(0.5)  # 模拟处理时间
+        await asyncio.sleep(0.5)  # simulate processing time
         
         result = await self.agent.invoke()
-        # 最终结果使用 Message 事件
+        # final result use Message event
         await event_queue.enqueue_event(new_agent_text_message(f"Final result: {result}"))
 
     # --8<-- [end:HelloWorldAgentExecutor_execute]
